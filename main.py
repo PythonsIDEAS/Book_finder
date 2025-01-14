@@ -1,48 +1,61 @@
+# main.py
+
 import streamlit as st
+from db import fetch_books, search_books_by_title, search_books_by_author, add_new_book
 
-# Sample book database (you can replace it with an actual database or API)
-books_db = [
-    {"title": "1984", "author": "George Orwell"},
-    {"title": "To Kill a Mockingbird", "author": "Harper Lee"},
-    {"title": "Pride and Prejudice", "author": "Jane Austen"},
-    {"title": "The Great Gatsby", "author": "F. Scott Fitzgerald"},
-    {"title": "Moby Dick", "author": "Herman Melville"}
-]
+st.title("Library Database")
 
-# Function to search books by title
-def search_books_by_title(title):
-    results = [book for book in books_db if title.lower() in book['title'].lower()]
-    return results
+st.header("Books in the Library")
+books = fetch_books()
+for book in books:
+    st.write(f"**Title**: {book[1]}")
+    st.write(f"**Author**: {book[2]} {book[3]}")
+    st.write(f"**Publisher**: {book[4]}")
+    st.write(f"**Genre**: {book[5]}")
+    st.write(f"**Publication Year**: {book[6]}")
+    st.write(f"**Price**: {book[7]} RUB")
+    st.write(f"**Available Copies**: {book[8]}")
+    st.write("---")
 
-# Function to search books by author
-def search_books_by_author(author):
-    results = [book for book in books_db if author.lower() in book['author'].lower()]
-    return results
+st.header("Search Books by Title")
+search_title = st.text_input("Enter book title to search:")
+if search_title:
+    search_results = search_books_by_title(search_title)
+    for book in search_results:
+        st.write(f"**Title**: {book[1]}")
+        st.write(f"**Author**: {book[2]} {book[3]}")
+        st.write(f"**Publisher**: {book[4]}")
+        st.write(f"**Genre**: {book[5]}")
+        st.write(f"**Publication Year**: {book[6]}")
+        st.write(f"**Price**: {book[7]} RUB")
+        st.write(f"**Available Copies**: {book[8]}")
+        st.write("---")
 
-# Streamlit application
-st.title("Library Book Search")
+st.header("Search Books by Author")
+search_author = st.text_input("Enter author name to search:")
+if search_author:
+    search_results = search_books_by_author(search_author)
+    for book in search_results:
+        st.write(f"**Title**: {book[1]}")
+        st.write(f"**Author**: {book[2]} {book[3]}")
+        st.write(f"**Publisher**: {book[4]}")
+        st.write(f"**Genre**: {book[5]}")
+        st.write(f"**Publication Year**: {book[6]}")
+        st.write(f"**Price**: {book[7]} RUB")
+        st.write(f"**Available Copies**: {book[8]}")
+        st.write("---")
 
-st.write("Welcome to the library book search application!")
+st.header("Add a New Book")
+title = st.text_input("Book Title")
+author_id = st.number_input("Author ID", min_value=1)
+publisher_id = st.number_input("Publisher ID", min_value=1)
+genre_id = st.number_input("Genre ID", min_value=1)
+publication_year = st.number_input("Publication Year", min_value=1000, max_value=9999)
+isbn = st.text_input("ISBN")
+price = st.number_input("Price", min_value=0.0, format="%.2f")
+pages = st.number_input("Pages", min_value=1)
+available_copies = st.number_input("Available Copies", min_value=0)
 
-# Create two input forms for title and author search
-search_type = st.radio("Search by", ("Title", "Author"))
-
-if search_type == "Title":
-    title = st.text_input("Enter the book title:")
-    if title:
-        results = search_books_by_title(title)
-        if results:
-            for book in results:
-                st.write(f"**{book['title']}** by {book['author']}")
-        else:
-            st.write("No books found with this title.")
-        
-elif search_type == "Author":
-    author = st.text_input("Enter the author's name:")
-    if author:
-        results = search_books_by_author(author)
-        if results:
-            for book in results:
-                st.write(f"**{book['title']}** by {book['author']}")
-        else:
-            st.write("No books found by this author.")
+if st.button("Add Book"):
+    add_new_book(title, author_id, publisher_id, genre_id, publication_year, isbn, price, pages, available_copies)
+    st.success(f"Book '{title}' has been added to the database.")
