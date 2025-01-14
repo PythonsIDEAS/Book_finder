@@ -36,17 +36,33 @@ def search_books_by_title(title):
 def search_books_by_author(author_name):
     conn = get_db_connection()
     cursor = conn.cursor()
-    print(f"Searching for author: {author_name}")  # Debugging line to track search input
-    cursor.execute('''
+
+    # Debugging: Print the raw input to see what is being passed
+    print(f"Searching for author: '{author_name}'")  # Debugging line
+
+    # We will use "LOWER" for both the input and the database fields to make sure the search is case-insensitive
+    query = '''
     SELECT books.book_id, books.title, authors.first_name, authors.last_name, publishers.name, genres.name, books.publication_year, books.price, books.available_copies
     FROM books
     JOIN authors ON books.author_id = authors.author_id
     JOIN publishers ON books.publisher_id = publishers.publisher_id
     JOIN genres ON books.genre_id = genres.genre_id
     WHERE LOWER(authors.first_name) LIKE LOWER(?) OR LOWER(authors.last_name) LIKE LOWER(?);
-    ''', ('%' + author_name.lower() + '%', '%' + author_name.lower() + '%'))  # Case insensitive search
+    '''
+    
+    # Debugging: Log the query and the parameters being passed
+    print(f"Executing query: {query}")
+    print(f"Parameters: ('%{author_name.lower()}%', '%{author_name.lower()}%')")
+
+    # Perform the query with the author's name (case-insensitive)
+    cursor.execute(query, ('%' + author_name.lower() + '%', '%' + author_name.lower() + '%'))
+
+    # Fetch results and close the connection
     books = cursor.fetchall()
-    print(f"Found books: {books}")  # Debugging line to view found results
+    
+    # Debugging: Print the result set to see what is being returned
+    print(f"Found books: {books}")  # Debugging line
+
     conn.close()
     return books
 
