@@ -1,4 +1,3 @@
-# db.py
 import sqlite3
 
 def get_db_connection():
@@ -37,15 +36,17 @@ def search_books_by_title(title):
 def search_books_by_author(author_name):
     conn = get_db_connection()
     cursor = conn.cursor()
+    print(f"Searching for author: {author_name}")  # Debugging line to track search input
     cursor.execute('''
     SELECT books.book_id, books.title, authors.first_name, authors.last_name, publishers.name, genres.name, books.publication_year, books.price, books.available_copies
     FROM books
     JOIN authors ON books.author_id = authors.author_id
     JOIN publishers ON books.publisher_id = publishers.publisher_id
     JOIN genres ON books.genre_id = genres.genre_id
-    WHERE authors.first_name LIKE ? OR authors.last_name LIKE ?;
-    ''', ('%' + author_name + '%', '%' + author_name + '%'))
+    WHERE LOWER(authors.first_name) LIKE LOWER(?) OR LOWER(authors.last_name) LIKE LOWER(?);
+    ''', ('%' + author_name.lower() + '%', '%' + author_name.lower() + '%'))  # Case insensitive search
     books = cursor.fetchall()
+    print(f"Found books: {books}")  # Debugging line to view found results
     conn.close()
     return books
 
