@@ -5,34 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Проект Библиотека</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        h1, h2, h3 {
-            color: #333;
-        }
-        pre {
-            background-color: #f1f1f1;
-            padding: 10px;
-            border-radius: 5px;
-            font-family: 'Courier New', Courier, monospace;
-        }
-        ul {
-            line-height: 1.8;
-        }
-        .section {
-            margin-bottom: 20px;
-        }
-        .code-block {
-            background-color: #e8e8e8;
-            padding: 10px;
-            border-radius: 5px;
-        }
-    </style>
 </head>
 <body>
 
